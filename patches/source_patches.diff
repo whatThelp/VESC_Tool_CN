@@ -1,0 +1,77 @@
+# 汉化版对 VESC Tool 源码做的三处功能性改动（其余改动全部是字符串替换）
+# 1. main.cpp        : 装载 Qt 自带简体中文翻译，让标准对话框/文件对话框也是中文
+# 2. configparam.h   : 新增 enumNamesSig 字段（enumNames 的英文原名）
+# 3. configparams.cpp: 解析 enumNamesSig；配置签名改用英文原名计算
+#    —— 第 2、3 条是必须的：签名把 enumNames 算进去，翻译下拉选项会让签名
+#       和固件端对不上，导致读写配置被判 Invalid signature。
+
+--- a/main.cpp
++++ b/main.cpp
+@@ -33,6 +33,8 @@
+ #include "minimp3/qminimp3.h"
+ 
+ #include <QApplication>
++#include <QTranslator>
++#include <QLibraryInfo>
+ #include <QStyleFactory>
+ #include <QSettings>
+ #include <QDesktopWidget>
+@@ -1595,6 +1597,18 @@
+         QApplication *a = new QApplication(argc, argv);
+         app = a;
+ 
++        // 汉化版：装上 Qt 自带的简体中文翻译，这样标准对话框按钮（确定/取消）、
++        // 文件对话框、右键菜单等 Qt 内建文案也是中文。
++        {
++            static QTranslator qtTranslator;
++            const QString appTs = QCoreApplication::applicationDirPath() + "/translations";
++            if (qtTranslator.load("qt_zh_CN", appTs) ||
++                    qtTranslator.load("qt_zh_CN",
++                                      QLibraryInfo::location(QLibraryInfo::TranslationsPath))) {
++                a->installTranslator(&qtTranslator);
++            }
++        }
++
+         addFonts();
+ 
+         // Style
+
+--- a/configparam.h
++++ b/configparam.h
+@@ -54,6 +54,10 @@
+     int valInt;
+     QString valString;
+     QStringList enumNames;
++    // 汉化版新增：enumNames 的英文原名。配置签名（getSignature）必须用英文原名计算，
++    // 否则签名会和固件里由英文 XML 生成的常量对不上，读写配置会被判为 Invalid signature。
++    // 该元素缺失时（原版 XML）自动回退到 enumNames，行为与原版完全一致。
++    QStringList enumNamesSig;
+     double maxDouble;
+     double minDouble;
+     double stepDouble;
+
+--- a/configparams.cpp
++++ b/configparams.cpp
+@@ -1380,6 +1380,8 @@
+                             p.editAsPercentage = stream.readElementText().toInt();
+                         } else if (name == "enumNames") {
+                             p.enumNames.append(stream.readElementText());
++                        } else if (name == "enumNamesSig") {
++                            p.enumNamesSig.append(stream.readElementText());
+                         } else if (name == "longName") {
+                             p.longName = stream.readElementText();
+                         } else if (name == "maxDouble") {
+@@ -1709,7 +1711,11 @@
+         if (p) {
+             sigStr.append(QString("%1").arg(int(p->type)));
+             sigStr.append(QString("%1").arg(int(p->vTx)));
+-            for (auto n: p->enumNames) {
++            // 汉化版：签名一律用英文原名，保证与固件端的签名常量一致。
++            // 没有 enumNamesSig 的（原版 XML）退回 enumNames，行为不变。
++            const QStringList &sigNames =
++                    p->enumNamesSig.isEmpty() ? p->enumNames : p->enumNamesSig;
++            for (auto n: sigNames) {
+                 sigStr.append(n);
+             }
+         }
+
