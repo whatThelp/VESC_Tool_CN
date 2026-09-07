@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <code>汉化版 v1.0</code> ·
-  <code>VESC Tool 7.01</code> ·
+  <code>汉化版 v1.1</code> ·
+  <code>VESC Tool 7.00</code> ·
   <code>固件配置 6.06 / 7.00 / 7.01</code> ·
   <code>Windows x64</code> ·
   <code>GPL-3.0</code>
@@ -23,8 +23,8 @@
 
 | 项目 | 版本 |
 |---|---|
-| **汉化版本** | **v1.0**（2026-09-07 发布，第一、二阶段全部完成） |
-| **VESC Tool 版本** | **7.01**（`VT_VERSION = 7.01`，`VT_IS_TEST_VERSION = 1`） |
+| **汉化版本** | **v1.1**（2026-09-07，第一、二阶段全部完成） |
+| **VESC Tool 版本** | **7.00**（`VT_VERSION = 7.00`，`VT_IS_TEST_VERSION = 0`，正式版非测试版） |
 | **上游源码** | [vedderb/vesc_tool](https://github.com/vedderb/vesc_tool) `master` · commit `dc53c658cbb89a947246034f7a00149cf79abdfc` |
 | **配置版本** | `VT_CONFIG_VERSION = 4` |
 | **已汉化的固件配置** | **6.06 / 7.00 / 7.01**（其余 22 个版本目录保持英文原版） |
@@ -35,6 +35,24 @@
 > **这是一个已经完成的汉化版本，不是半成品。** 菜单、左侧导航、按钮、右侧工具栏悬停提示、
 > 参数标签、下拉选项、帮助文本、设置向导、对话框、以及 Qt 自身的标准控件文案，全部已汉化。
 > 详细覆盖率见下表，未汉化的部分都是**刻意保留**的英文（原因见后）。
+
+<details>
+<summary><b>关于「VESC Tool 7.00」这个版本号</b>（点开看说明）</summary>
+
+上游 vesc_tool 仓库**一个 git tag 都没有**（`git ls-remote` 只返回 `HEAD` 和
+`refs/heads/master`），官方的 7.00 是某个时间点的 master 直接编译出的二进制，没有单独的
+7.00 源码分支可以 checkout。
+
+所以本版本的做法是：用 master 的源码（commit `dc53c658`），把 `.pro` 里的
+`VT_VERSION` 设为 `7.00`、`VT_IS_TEST_VERSION` 设为 `0` 后编译。这样：
+
+- 离线时默认加载 **7.00** 的参数定义
+- 连接 7.00 固件时进入**正常模式**，不弹「有固件更新可用」提示
+- 启动不再弹「VESC Tool 测试版」提示
+- 唯一的妥协：代码本身仍是 master 的代码，只是版本号标 7.00。对调参没有影响
+  （参数定义来自 XML，用的就是 7.00 那份），差别只在 7.01 之后新增的功能仍然存在。
+
+</details>
 
 ---
 
@@ -129,6 +147,28 @@ copy res_config_cn_for_official.rcc "%APPDATA%\VESC\VESC Tool\res_config.rcc"
 >
 > 包内含全部 25 个版本目录（6.06/7.00/7.01 中文，其余英文原版）+ `fw.xml`，不会丢掉对其它
 > 固件版本的支持。官方的「下载配置」功能会覆盖同一路径，覆盖后重拷一次即可。
+
+---
+
+## 固件版本怎么切换
+
+**连上电调后是自动的，不用管。** 连接时程序读到固件版本，只要
+`res/config/<版本>/` 存在，就会调用 `Utility::configLoad()` 把那一版的参数定义加载进来
+（`vescinterface.cpp:3743`）。也就是说：
+
+| 你的固件 | 参数页显示 | 是否中文 |
+|---|---|---|
+| 7.00 | `res/config/7.00/` | ✅ 中文 |
+| 7.01 | `res/config/7.01/` | ✅ 中文 |
+| 6.06 | `res/config/6.06/` | ✅ 中文 |
+| 其它（3.55～6.05） | 对应版本目录 | 英文原版 |
+
+**离线时想手动切**：菜单 `开发者` → `加载固件配置` → 选版本。这个子菜单是上游自带的，
+列出全部 25 个版本，点一下立即生效。
+
+本版本离线时默认加载 **7.00**（由 `VT_VERSION` 决定）。连接 **7.01** 固件时会进入受限模式并
+提示「固件比本版本 VESC Tool 支持的更新」—— 受限模式只屏蔽老版本不认识的新命令，
+`GET/SET_MCCONF`、`GET/SET_APPCONF` 都在放行名单里，**调参不受影响**。
 
 ---
 
@@ -251,7 +291,8 @@ python tools/verify.py   <原版>/res/config/7.02 out/            # 校验
 
 ## 已知问题
 
-1. `VT_IS_TEST_VERSION = 1` —— 上游 master 当前就是开发版，启动时会弹一次「VESC Tool 测试版」提示。
+1. 版本号是 `7.00`，但代码取自上游 master（上游没有 7.00 的 tag，见「关于版本号」）。
+   连接 **7.01** 固件会进入受限模式并提示固件更新，调参本身不受影响。
 2. `VT_GIT_COMMIT` 为空 —— 「关于」里该字段是空的（源码是 tar 包，无 `.git`）。
 3. 参数编辑器另存 XML 会丢 `enumNamesSig`，重新跑一次 `tools/add_sig.py` 即可补回。
 4. 模拟器未实现 `COMM_GET_VALUES_SELECTIVE`、IMU、BMS 等命令，相关页面连模拟器时没有数据。

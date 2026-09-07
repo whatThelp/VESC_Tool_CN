@@ -12,8 +12,8 @@
 | 仓库 | https://github.com/vedderb/vesc_tool |
 | 分支 | master |
 | commit | `dc53c658cbb89a947246034f7a00149cf79abdfc` |
-| `VT_VERSION` | **7.01** |
-| `VT_IS_TEST_VERSION` | 1（上游 master 目前就是开发版） |
+| `VT_VERSION` | **7.00**（上游无 tag，用 master 源码把版本号设为 7.00 编译） |
+| `VT_IS_TEST_VERSION` | **0**（正式版，不弹测试版提示） |
 | `VT_CONFIG_VERSION` | 4 |
 | `VT_GIT_COMMIT` | 空（源码是 tar 包，无 .git） |
 
@@ -52,7 +52,8 @@ QtQuick.Dialogs 等一批 Qt6 已删或改签名的用法）。Qt 5.15.2 装在�
 | 7.01 / info | 23/25 (92%) | — | 22/25 (88%) |
 
 **为什么翻了三个版本**：`Utility::configLoadLatest()` 按 `VT_VERSION` 挑目录，
-**未连接时程序读的是 `res/config/7.01/`**，只有连上 7.00 固件才读 7.00；而本项目的板子跑
+本版本 `VT_VERSION = 7.00`，**未连接时读 `res/config/7.00/`**；连上电调后会按实际固件版本
+调用 `Utility::configLoad()` 自动切换（`vescinterface.cpp:3743`）；而本项目的板子跑
 6.06。其余 22 个版本目录（3.55～6.05）未改动。
 
 ### 第二阶段：界面骨架（菜单 / 导航 / 按钮 / 悬停提示 / 对话框 / 向导）
@@ -161,7 +162,7 @@ vesc_tool_cn/
 ├─ res_config_cn_for_official.rcc        上面那份打成的外挂资源包（见第 6 节方式 B）
 ├─ patches/source_patches.diff           功能性源码改动
 ├─ tools/                                汉化流水线 + 3179 条译文词典 + 设备模拟器 + .ts 源文件
-├─ screenshots/                          实机截图 6 张
+├─ screenshots/                          实机截图 8 张
 └─ build_log_tail.txt
 ```
 
@@ -169,7 +170,7 @@ vesc_tool_cn/
 
 | 文件 | 字节 | md5 |
 |---|---|---|
-| `vesc_tool_cn_win64/vesc_tool_cn.exe` | 20911104 | `614ec0f4c22d51108649e0f70bf5a283` |
+| `vesc_tool_cn_win64/vesc_tool_cn.exe` | 20911104 | `da46ef562016c6e16d5c3c4fc9c5d67b` |
 | `vesc_tool_cn_win64/translations/vesc_cn_extra.qm` | 2014 | `af0b2146b8f8282d255ced1f6eeac6f9` |
 | `res_config_cn_for_official.rcc` | 2035122 | `25f1873c7e69d28df2b54d1cf24de6cd` |
 
@@ -216,14 +217,17 @@ copy res_config_cn_for_official.rcc "%APPDATA%\VESC\VESC Tool\res_config.rcc"
 
 ### 实机验证（配自制设备模拟器）
 
-在本机启动 `vesc_tool_cn.exe`，用 `tools/vesc_sim.py` 模拟一台跑 6.06 固件、硬件名
-`DIY_70_80` 的电调，通过 TCP 连接。结果：
+在本机启动 `vesc_tool_cn.exe`，用 `tools/vesc_sim.py` 模拟一台硬件名 `DIY_70_80` 的电调，
+通过 TCP 连接。分别用 **6.06** 和 **7.00** 两种固件版本各测了一轮。结果：
 
 | 验证项 | 结果 |
 |---|---|
 | 程序启动、主窗口 | 正常，菜单/导航/按钮/状态栏全中文 |
 | 首启介绍向导 | "欢迎使用 VESC® Tool"、"使用须知" 两页中文，排版正常 |
-| 连接 | 状态栏 `已连接（TCP）到 127.0.0.1:65102，受限模式`，CAN 设备列表出现 `DIY_70_80 [本机]` |
+| 连接（7.00 固件） | 状态栏 `已连接（TCP）到 127.0.0.1:65102` —— **无「受限模式」后缀、不弹固件更新提示**，CAN 设备列表出现 `DIY_70_80 [本机]` |
+| 连接（6.06 固件） | 状态栏带「，受限模式」并弹一次「有固件更新可用」——工具比固件新时的上游既有行为，读写配置照常 |
+| 启动提示 | `VT_IS_TEST_VERSION = 0`，**不再弹「VESC Tool 测试版」** |
+| 固件版本自动切换 | 连 7.00 固件自动加载 `res/config/7.00/`，连 6.06 自动加载 `res/config/6.06/`（`vescinterface.cpp:3743`） |
 | **读取电机配置** | 模拟器按**英文签名**发出配置，VESC Tool **正常接收并解出** |
 | **配置数值** | 模拟器注入的特征值原样显示：电机相电流上限 = **123.45 A**、电池电流上限 = **67.89 A** |
 | 中文下拉值 | `DRV8301 过流模式` 显示为 `限流` |
@@ -258,8 +262,11 @@ python tools/vesc_sim.py <原版vesc_tool>/res/config/6.06 65102 6 6
    过滤掉，报 `Unable to find the platform plugin.`。去掉该开关即可。
 2. **`VT_GIT_COMMIT` 为空** —— "关于"里该字段是空的。要补的话在源码目录 `git init` 并提交
    一次，或把 `.pro` 里那行改成写死的哈希。
-3. **`VT_IS_TEST_VERSION = 1`** —— 上游 master 当前就是开发版，版本号带测试版标记，启动时
-   会弹一次"VESC Tool 测试版"提示。
+3. **版本号 7.00，代码取自 master** —— 上游 vesc_tool 仓库没有任何 git tag（`git ls-remote`
+   只有 `HEAD` 和 `refs/heads/master`），官方 7.00 是某时间点 master 的构建产物，没有 7.00
+   源码可 checkout。因此本版本用 master 源码把 `VT_VERSION` 设为 7.00 编译：离线默认读 7.00
+   配置、连 7.00 固件为正常模式、不弹测试版提示；代价是 7.01 之后新增的功能仍在代码里，
+   且连 **7.01** 固件会进入受限模式（只屏蔽老版本不认识的新命令，读写配置不受影响）。
 4. **参数编辑器保存 XML 会丢 `enumNamesSig`** —— `getXML()` 不写出该元素。日常调参不受影响；
    真要走这条路，重新跑一次 `tools/add_sig.py` 补回来即可。
 5. **模拟器不实现的命令** —— `COMM_GET_VALUES_SELECTIVE`、IMU、BMS 等未实现，相关页面在
