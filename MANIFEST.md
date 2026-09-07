@@ -234,7 +234,8 @@ copy res_config_cn_for_official.rcc "%APPDATA%\VESC\VESC Tool\res_config.rcc"
 （`mcconf 0x2EFD0142` / `appconf 0x7D217EB8`），汉化版能正常读入而不是报 Invalid signature，
 说明它与真实固件的签名是一致的。
 
-截图：`screenshots/` 下 6 张（介绍页、使用须知、主界面、连接页、参数页含特征值、工具栏提示）。
+截图：`screenshots/` 下 8 张 —— 介绍页、使用须知、主界面、连接页、参数页（含特征值）、
+工具栏悬停提示、参数帮助弹窗、FOC 参数页。
 
 ## 8. 设备模拟器
 
