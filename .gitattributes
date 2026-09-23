@@ -1,0 +1,3 @@
+patches/*.diff -text
+*.rcc binary
+*.qm binary

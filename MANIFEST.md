@@ -1,9 +1,27 @@
 # VESC Tool 汉化版 —— 交付说明
 
-生成日期：2026-09-07（第一、二阶段全部完成，已实机验证）
+生成日期：2026-09-07（v1.1，第一、二阶段全部完成）
+更新日期：**2026-09-23（v1.2，全功能复测后修复，见第 0 节和 [TEST_REPORT.md](TEST_REPORT.md)）**
 生成机器：Windows 11 Pro x64（本机原生编译，非交叉编译）
 
 ---
+
+## 0. v1.2 更新内容（2026-09-23）
+
+全功能复测（报告见 [TEST_REPORT.md](TEST_REPORT.md)，教程见 [TUTORIAL.md](TUTORIAL.md)）发现并修复：
+
+| # | 严重度 | 问题 | 修复 |
+|---|:---:|---|---|
+| 1 | **严重** | v1.1 程序包缺 QML 模块：欢迎页右侧空白，**FOC 电机配置向导打不开** | `windeployqt` 同时扫描 `mobile/` 和 `res/qml/` 重新打包（新增 `QtQuick.Dialogs`、`QtQuick.PrivateWidgets`、`QtQuick.Scene3D`、`Qt.labs.*`、`Qt3D` 等 92 个文件） |
+| 2 | 中 | FOC 检测结果对话框是英文 | 新增 `Utility::detectResultZh()`，只在显示处翻译 |
+| 3 | 中 | 位域参数多出「未使用」勾选框 | 位域类型的 `Unused` 还原英文（控件靠它隐藏保留位） |
+| 4 | 中 | `patches/source_patches.diff` 缺 `vesc_cn_extra.qm` 的加载代码 | 用 `tools/make_patch.py` 重新生成，自检可干净打在上游原版上 |
+| 5 | 低 | 遗留英文：新版 FOC 向导、欢迎页面板、仪表盘、65 处数值框前缀、旧版向导分组标题、方向页、状态栏写入提示、实时数据曲线、参数分组标题、底部指示条 | `tools/fixup.py`、`tools/fix_round3.py` |
+| 6 | 低 | 中文句子中间多余空格 145 处 | `tools/fix_cjk_space.py` |
+| 7 | 低 | 个别误译（`Current` 译成「当前值」等） | 已改 |
+
+另外：设备模拟器换成带电机物理模型的 `tools/vesc_emu.py`（7.00 固件、参数识别、转速环、保活、急停），
+配套协议自检 `tools/emu_selftest.py`（24/24 通过）。
 
 ## 1. 源码与版本
 
@@ -104,9 +122,9 @@ IMU 采样、手柄控制等）在 `mainwindow.ui` 的 `toolTip` 里，已全部
 - `<description>` 正文全中文，首次出现的专业术语后括号附英文。
 - FOC / BLDC / PWM / ERPM / HFI / MTPA / ADC / PPM / CAN / UART / SWD / BMS / IMU 等缩写保留英文。
 
-## 4. ★ 对源码做的四处功能性改动
+## 4. ★ 对源码做的五处功能性改动
 
-除字符串替换外只动了这四处（`patches/source_patches.diff` 是前三处的完整补丁）：
+除字符串替换外只动了这五处（`patches/source_patches.diff` 是它们的完整补丁，由 `tools/make_patch.py` 生成并自检）：
 
 | 文件 | 改动 |
 |---|---|
@@ -114,6 +132,7 @@ IMU 采样、手柄控制等）在 `mainwindow.ui` 的 `toolTip` 里，已全部
 | `configparam.h` | 新增 `QStringList enumNamesSig` 字段 |
 | `configparams.cpp` | 解析 `<enumNamesSig>`；`getSignature()` 改用它计算 |
 | `mainwindow.cpp` | 三个页面名 `Terminal`/`QML Scripting`/`LispBM Scripting` 成对替换 |
+| `utility.h/.cpp`、`widgets/detectallfocdialog.cpp`、`mobile/SetupWizardFoc.qml` | 新增 `Utility::detectResultZh()`，检测结果只在显示处翻成中文；判断成败仍用英文 `startsWith("Success!")` |
 
 最后一条要成对改的原因：这三项是 `addPageItem("Terminal", …)` 的裸字符串，而
 `showPage("Terminal")` 用**同一个字符串当页面键**，只翻一边会直接把页面跳转打断。
@@ -151,7 +170,10 @@ return Utility::crc32c(...);
 ```
 vesc_tool_cn/
 ├─ MANIFEST.md                        本文件
-├─ vesc_tool_cn_win64/                可直接运行的程序目录（约 129 MB）
+├─ TUTORIAL.md                        使用教程：参数识别 → 速度控制启动电机
+├─ TEST_REPORT.md                     v1.2 全功能复测报告
+├─ docs/img/                          教程与报告配图、33 页巡检缩略图
+├─ vesc_tool_cn_win64/                可直接运行的程序目录（约 145 MB）
 │  ├─ vesc_tool_cn.exe                主程序
 │  ├─ Qt5*.dll / platforms/ / QtQuick*/ …   Qt 运行时与 QML 模块
 │  ├─ translations/qt_zh_CN.qm        Qt 自带简体中文
@@ -160,8 +182,9 @@ vesc_tool_cn/
 ├─ config_cn_builtin/{6.06,7.00,7.01}/   本 exe 内置的配置（中文下拉 + enumNamesSig）
 ├─ config_cn_official/{6.06,7.00,7.01}/  给官方原版 exe 用的配置（英文下拉）
 ├─ res_config_cn_for_official.rcc        上面那份打成的外挂资源包（见第 6 节方式 B）
-├─ patches/source_patches.diff           功能性源码改动
-├─ tools/                                汉化流水线 + 3179 条译文词典 + 设备模拟器 + .ts 源文件
+├─ patches/source_patches.diff           功能性源码改动（5 处）
+├─ patches/full_source.diff              完整源码改动（198 个文件，含全部翻译），打到上游原版上即得到编译本 exe 的源码
+├─ tools/                                汉化流水线 + 3179 条译文词典 + 修正脚本 + 设备模拟器 + .ts 源文件
 ├─ screenshots/                          实机截图 8 张
 └─ build_log_tail.txt
 ```
@@ -170,9 +193,9 @@ vesc_tool_cn/
 
 | 文件 | 字节 | md5 |
 |---|---|---|
-| `vesc_tool_cn_win64/vesc_tool_cn.exe` | 20911104 | `da46ef562016c6e16d5c3c4fc9c5d67b` |
+| `vesc_tool_cn_win64/vesc_tool_cn.exe` | 20926976 | `946c5e518e9d81a4d47ee61069e8c802` |
 | `vesc_tool_cn_win64/translations/vesc_cn_extra.qm` | 2014 | `af0b2146b8f8282d255ced1f6eeac6f9` |
-| `res_config_cn_for_official.rcc` | 2035122 | `25f1873c7e69d28df2b54d1cf24de6cd` |
+| `res_config_cn_for_official.rcc` | 2035290 | `a07c233912bb68c6ef286feaabf84407` |
 
 `vesc_tool_cn.exe` 是 `PE32+ executable for MS Windows 5.02 (GUI), x86-64`。
 
@@ -243,7 +266,16 @@ copy res_config_cn_for_official.rcc "%APPDATA%\VESC\VESC Tool\res_config.rcc"
 
 ## 8. 设备模拟器
 
-`tools/vesc_sim.py`，用 VESC 包协议在 TCP 上假装成一台电调：
+**v1.2 起用 `tools/vesc_emu.py`**（带电机物理模型，模拟 7.00 固件）：配置签名用原版英文 XML
+计算、写配置后按硬件上限截断、转速环按固件公式、保活超时、`DETECT_APPLY_ALL_FOC` 按固件公式
+写回参数、`COMM_MOTOR_ESTOP` 急停、终端与故障注入（`emu_fault uv` 等），所有收发记成 JSON 日志。
+
+```bash
+python tools/vesc_emu.py <原版英文 res/config/7.00> --port 65102 --fw 7.00 --log emu.jsonl
+python tools/emu_selftest.py <原版英文 res/config/7.00>      # 协议自检 24 项
+```
+
+下面是 v1.1 用的简易模拟器 `tools/vesc_sim.py`（只有读配置和实时数据），保留备查：
 
 ```bash
 python tools/vesc_sim.py <原版vesc_tool>/res/config/6.06 65102 6 6
@@ -269,14 +301,19 @@ python tools/vesc_sim.py <原版vesc_tool>/res/config/6.06 65102 6 6
    且连 **7.01** 固件会进入受限模式（只屏蔽老版本不认识的新命令，读写配置不受影响）。
 4. **参数编辑器保存 XML 会丢 `enumNamesSig`** —— `getXML()` 不写出该元素。日常调参不受影响；
    真要走这条路，重新跑一次 `tools/add_sig.py` 补回来即可。
-5. **模拟器不实现的命令** —— `COMM_GET_VALUES_SELECTIVE`、IMU、BMS 等未实现，相关页面在
-   连模拟器时不会有数据。这是模拟器的边界，不是汉化的问题。
-6. **布局未逐页目视核对** —— 主界面、连接页、参数页、向导页都看过，中文比英文短，没有发现
-   撑坏或截断。但没有把所有页面逐一截图比对。发现问题时改对应 XML 的 `<longName>` 即可，
-   用方式 B 免重编译生效。
+5. **模拟器不实现的命令** —— IMU、BMS、`COMM_GET_STATS` 等未实现，相关页面在连模拟器时
+   不会有数据。这是模拟器的边界，不是汉化的问题。
+6. **布局** —— v1.2 把左侧 33 个页面逐页截图巡检过（`docs/img/pages/`），没发现撑坏或截断；
+   各页内的子选项卡没有逐个点开。发现问题时改对应 XML 的 `<longName>` 即可，用方式 B 免重编译生效。
 7. **注册表副作用** —— 验证运行时程序在 `HKCU\Software\VESC\VESC Tool` 下写了默认设置，
    并把 `intro_done` 置为 `false`。后果是下次启动任何版本的 VESC Tool 会再弹一次首启介绍
    向导，点完即可，不影响电调配置。
+8. **没有打包 OpenSSL** —— 固件页「下载最新」、扩展包商店等 HTTPS 功能不可用（调试控制台有
+   `TLS initialization failed`），USB 连接、参数识别、电机控制、读写配置不受影响。需要时把
+   OpenSSL 1.1.1 x64 的 `libssl-1_1-x64.dll`、`libcrypto-1_1-x64.dll` 放到 exe 同目录。
+9. **打包必须同时扫描两个 QML 目录** —— `windeployqt --compiler-runtime --qmldir <源码>/mobile
+   --qmldir <源码>/res/qml vesc_tool_cn.exe`，再把 `qt_zh_CN.qm`、`vesc_cn_extra.qm` 拷进
+   `translations/`。只扫 `res/qml` 就会重现 v1.1 的「向导打不开」。
 
 ## 10. 汉化流水线（可复用）
 
@@ -290,7 +327,15 @@ md5** 索引，没变过的条目自动命中）：
 | `add_sig.py` | 给译后 XML 补 `<enumNamesSig>`（配置签名用的英文原名）。 |
 | `verify.py` | 第 7 节的五项结构校验，自动识别两种交付变体。 |
 | `mkbatch.py` / `mkbatch2.py` | 按首次出现顺序切批次。 |
-| `vesc_sim.py` | 第 8 节的设备模拟器。 |
+| `fixup.py` | 源码修正：位域 `Unused` 还原、页面名成对替换、配置检查标题、`vesc_cn_extra.qm` 加载、连接页标题、65 处数值框前缀。 |
+| `fix_detect_zh.py` | 新增 `Utility::detectResultZh()` 并在两个检测对话框的显示处调用。 |
+| `fix_round3.py` | v1.2 复测补的遗留英文（向导、面板、仪表、状态栏、曲线、参数分组标题）。 |
+| `fix_cjk_space.py` | 去掉中文字面量拼接处多余的空格。 |
+| `find_en_qml.py` | 列出 QML 里仍是英文的字符串字面量（排查用）。 |
+| `make_patch.py` | 从上游原版生成「只含功能改动」的 `source_patches.diff`，并自检。 |
+| `build_rcc.py` | 打包方式 B 用的外挂资源包 `res_config_cn_for_official.rcc`（25 个版本 + fw.xml）。 |
+| `vesc_emu.py` / `emu_selftest.py` | 第 8 节的 7.00 固件模拟器及其协议自检。 |
+| `vesc_sim.py` | v1.1 的简易模拟器。 |
 | `vesc_cn_extra.ts` | Qt 标准按钮的补充翻译源文件（`lrelease` 编译成 .qm）。 |
 | `trans/*.json` | 译文词典，**3179 条**，键是英文原文的 md5 前 10 位。 |
 

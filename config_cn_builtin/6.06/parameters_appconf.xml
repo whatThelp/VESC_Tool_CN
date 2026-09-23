@@ -150,8 +150,8 @@ p, li { white-space: pre-wrap; }
             <enumNames>状态 4</enumNames>
             <enumNames>状态 5</enumNames>
             <enumNames>状态 6</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
             <enumNamesSig>Status 1</enumNamesSig>
             <enumNamesSig>Status 2</enumNamesSig>
             <enumNamesSig>Status 3</enumNamesSig>
@@ -208,8 +208,8 @@ p, li { white-space: pre-wrap; }
             <enumNames>状态 4</enumNames>
             <enumNames>状态 5</enumNames>
             <enumNames>状态 6</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
             <enumNamesSig>Status 1</enumNamesSig>
             <enumNamesSig>Status 2</enumNamesSig>
             <enumNamesSig>Status 3</enumNamesSig>
@@ -1357,11 +1357,11 @@ p, li { white-space: pre-wrap; }
             <enumNames>启用定速巡航</enumNames>
             <enumNames>反转巡航按钮极性</enumNames>
             <enumNames>反转倒车按钮极性</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
             <enumNamesSig>Enable Cruise Control</enumNamesSig>
             <enumNamesSig>Invert CC Button</enumNamesSig>
             <enumNamesSig>Invert Reverse Button</enumNamesSig>
@@ -3003,10 +3003,10 @@ p, li { white-space: pre-wrap; }
                     <param>uavcan_status_current_mode</param>
                     <param>servo_out_enable</param>
                     <param>kill_sw_mode</param>
-                    <param>::sep::CAN Messages Rate 1</param>
+                    <param>::sep::CAN 报文速率 1</param>
                     <param>can_status_rate_1</param>
                     <param>can_status_msgs_r1</param>
-                    <param>::sep::CAN Messages Rate 2</param>
+                    <param>::sep::CAN 报文速率 2</param>
                     <param>can_status_rate_2</param>
                     <param>can_status_msgs_r2</param>
                 </subgroupParams>
@@ -3026,7 +3026,7 @@ p, li { white-space: pre-wrap; }
                     <param>app_ppm_conf.max_erpm_for_dir</param>
                     <param>app_ppm_conf.smart_rev_max_duty</param>
                     <param>app_ppm_conf.smart_rev_ramp_time</param>
-                    <param>::sep::Multiple VESCs over CAN</param>
+                    <param>::sep::CAN 总线多 VESC</param>
                     <param>app_ppm_conf.multi_esc</param>
                     <param>app_ppm_conf.tc</param>
                     <param>app_ppm_conf.tc_max_diff</param>
@@ -3062,7 +3062,7 @@ p, li { white-space: pre-wrap; }
                     <param>app_adc_conf.ramp_time_pos</param>
                     <param>app_adc_conf.ramp_time_neg</param>
                     <param>app_adc_conf.buttons</param>
-                    <param>::sep::Multiple VESCs over CAN-bus</param>
+                    <param>::sep::CAN 总线多 VESC</param>
                     <param>app_adc_conf.multi_esc</param>
                     <param>app_adc_conf.tc</param>
                     <param>app_adc_conf.tc_max_diff</param>
@@ -3116,7 +3116,7 @@ p, li { white-space: pre-wrap; }
                     <param>app_chuk_conf.use_smart_rev</param>
                     <param>app_chuk_conf.smart_rev_max_duty</param>
                     <param>app_chuk_conf.smart_rev_ramp_time</param>
-                    <param>::sep::Multiple VESCs over CAN-bus</param>
+                    <param>::sep::CAN 总线多 VESC</param>
                     <param>app_chuk_conf.multi_esc</param>
                     <param>app_chuk_conf.tc</param>
                     <param>app_chuk_conf.tc_max_diff</param>
@@ -3136,16 +3136,16 @@ p, li { white-space: pre-wrap; }
             <subgroup>
                 <subgroupName>General</subgroupName>
                 <subgroupParams>
-                    <param>::sep::Radio</param>
+                    <param>::sep::射频</param>
                     <param>app_nrf_conf.power</param>
                     <param>app_nrf_conf.speed</param>
                     <param>app_nrf_conf.channel</param>
-                    <param>::sep::Integrity</param>
+                    <param>::sep::完整性校验</param>
                     <param>app_nrf_conf.crc_type</param>
                     <param>app_nrf_conf.send_crc_ack</param>
                     <param>app_nrf_conf.retry_delay</param>
                     <param>app_nrf_conf.retries</param>
-                    <param>::sep::Address</param>
+                    <param>::sep::地址</param>
                     <param>app_nrf_conf.address__0</param>
                     <param>app_nrf_conf.address__1</param>
                     <param>app_nrf_conf.address__2</param>
@@ -3171,11 +3171,11 @@ p, li { white-space: pre-wrap; }
                     <param>imu_conf.mahony_kp</param>
                     <param>imu_conf.mahony_ki</param>
                     <param>imu_conf.madgwick_beta</param>
-                    <param>::sep::Rotation</param>
+                    <param>::sep::旋转</param>
                     <param>imu_conf.rot_roll</param>
                     <param>imu_conf.rot_pitch</param>
                     <param>imu_conf.rot_yaw</param>
-                    <param>::sep::Offsets</param>
+                    <param>::sep::零点偏置</param>
                     <param>imu_conf.accel_offsets__0</param>
                     <param>imu_conf.accel_offsets__1</param>
                     <param>imu_conf.accel_offsets__2</param>

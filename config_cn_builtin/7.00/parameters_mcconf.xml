@@ -794,10 +794,10 @@ p, li { white-space: pre-wrap; }
             <enumNames>超速</enumNames>
             <enumNames>反向超速</enumNames>
             <enumNames>绝对超速</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
             <enumNamesSig>Encoder Slip</enumNamesSig>
             <enumNamesSig>Overspeed</enumNamesSig>
             <enumNamesSig>Underspeed</enumNamesSig>
@@ -2660,11 +2660,11 @@ p, li { white-space: pre-wrap; }
             <enumNames>开机时标定</enumNames>
             <enumNames>允许写入</enumNames>
             <enumNames>自动标定</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
             <enumNamesSig>Calibrate on Boot</enumNamesSig>
             <enumNamesSig>Write Enabled</enumNamesSig>
             <enumNamesSig>Auto Calibrate</enumNamesSig>
@@ -4609,10 +4609,10 @@ p, li { white-space: pre-wrap; }
             <enumNames>SOC</enumNames>
             <enumNames>最低单体电压</enumNames>
             <enumNames>最高单体电压</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
-            <enumNames>未使用</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
+            <enumNames>Unused</enumNames>
             <enumNamesSig>Overtemp</enumNamesSig>
             <enumNamesSig>SOC</enumNamesSig>
             <enumNamesSig>VCell Min</enumNamesSig>
@@ -5060,9 +5060,9 @@ p, li { white-space: pre-wrap; }
                 <subgroupName>Sensors</subgroupName>
                 <subgroupParams>
                     <param>m_sensor_port_mode</param>
-                    <param>::sep::ABI Encoder</param>
+                    <param>::sep::ABI 编码器</param>
                     <param>m_encoder_counts</param>
-                    <param>::sep::Sin/Cos Encoder</param>
+                    <param>::sep::正余弦编码器</param>
                     <param>m_encoder_sin_amp</param>
                     <param>m_encoder_cos_amp</param>
                     <param>m_encoder_sin_offset</param>
@@ -5074,14 +5074,14 @@ p, li { white-space: pre-wrap; }
             <subgroup>
                 <subgroupName>Current</subgroupName>
                 <subgroupParams>
-                    <param>::sep::Motor</param>
+                    <param>::sep::电机</param>
                     <param>l_current_max</param>
                     <param>l_current_min</param>
                     <param>l_abs_current_max</param>
                     <param>l_slow_abs_current</param>
                     <param>l_current_max_scale</param>
                     <param>l_current_min_scale</param>
-                    <param>::sep::Battery</param>
+                    <param>::sep::电池</param>
                     <param>l_in_current_max</param>
                     <param>l_in_current_min</param>
                     <param>l_in_current_map_start</param>
@@ -5119,18 +5119,18 @@ p, li { white-space: pre-wrap; }
             <subgroup>
                 <subgroupName>Temperature</subgroupName>
                 <subgroupParams>
-                    <param>::sep::Motor Temperature Sensor Type</param>
+                    <param>::sep::电机温度传感器类型</param>
                     <param>m_motor_temp_sens_type</param>
                     <param>m_ntc_motor_beta</param>
                     <param>m_ptc_motor_coeff</param>
                     <param>m_ntcx_ptcx_res</param>
                     <param>m_ntcx_ptcx_temp_base</param>
-                    <param>::sep::General</param>
+                    <param>::sep::常规</param>
                     <param>l_temp_accel_dec</param>
                     <param>::sep::MOSFET</param>
                     <param>l_temp_fet_start</param>
                     <param>l_temp_fet_end</param>
-                    <param>::sep::Motor</param>
+                    <param>::sep::电机</param>
                     <param>l_temp_motor_start</param>
                     <param>l_temp_motor_end</param>
                 </subgroupParams>
@@ -5241,7 +5241,7 @@ p, li { white-space: pre-wrap; }
                     <param>foc_current_kp</param>
                     <param>foc_current_ki</param>
                     <param>foc_observer_gain</param>
-                    <param>::sep::Encoder</param>
+                    <param>::sep::编码器</param>
                     <param>foc_sl_erpm</param>
                     <param>foc_encoder_offset</param>
                     <param>foc_encoder_ratio</param>
@@ -5333,15 +5333,15 @@ p, li { white-space: pre-wrap; }
                 <subgroupName>Offsets</subgroupName>
                 <subgroupParams>
                     <param>foc_offsets_cal_mode</param>
-                    <param>::sep::Current</param>
+                    <param>::sep::电流</param>
                     <param>foc_offsets_current__0</param>
                     <param>foc_offsets_current__1</param>
                     <param>foc_offsets_current__2</param>
-                    <param>::sep::Voltage</param>
+                    <param>::sep::电压</param>
                     <param>foc_offsets_voltage__0</param>
                     <param>foc_offsets_voltage__1</param>
                     <param>foc_offsets_voltage__2</param>
-                    <param>::sep::Voltage Undriven</param>
+                    <param>::sep::未驱动时的电压</param>
                     <param>foc_offsets_voltage_undriven__0</param>
                     <param>foc_offsets_voltage_undriven__1</param>
                     <param>foc_offsets_voltage_undriven__2</param>
@@ -5386,9 +5386,9 @@ p, li { white-space: pre-wrap; }
             <subgroup>
                 <subgroupName>General</subgroupName>
                 <subgroupParams>
-                    <param>::sep::Common</param>
+                    <param>::sep::通用</param>
                     <param>sp_pid_loop_rate</param>
-                    <param>::sep::Speed Controller</param>
+                    <param>::sep::速度控制器</param>
                     <param>s_pid_kp</param>
                     <param>s_pid_ki</param>
                     <param>s_pid_kd</param>
@@ -5398,7 +5398,7 @@ p, li { white-space: pre-wrap; }
                     <param>s_pid_ramp_erpms_s</param>
                     <param>foc_speed_soure</param>
                     <param>s_pid_speed_source</param>
-                    <param>::sep::Position Controller</param>
+                    <param>::sep::位置控制器</param>
                     <param>p_pid_kp</param>
                     <param>p_pid_ki</param>
                     <param>p_pid_kd</param>

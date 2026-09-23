@@ -10,12 +10,20 @@
 </p>
 
 <p align="center">
-  <code>汉化版 v1.1</code> ·
+  <code>汉化版 v1.2</code> ·
   <code>VESC Tool 7.00</code> ·
   <code>固件配置 6.06 / 7.00 / 7.01</code> ·
   <code>Windows x64</code> ·
   <code>GPL-3.0</code>
 </p>
+
+<p align="center">
+  <b>📖 <a href="TUTORIAL.md">使用教程：从电机参数识别到速度控制启动电机</a></b> ·
+  <b>🧪 <a href="TEST_REPORT.md">全功能复测报告</a></b>
+</p>
+
+> **v1.1 用户请更新**：v1.1（2026-09-07）的程序包漏打了几个 QML 运行库，欢迎页右侧是空白的、
+> **FOC 电机配置向导点了没反应**。v1.2 已修复，请替换整个 `vesc_tool_cn_win64` 目录。
 
 ---
 
@@ -23,7 +31,7 @@
 
 | 项目 | 版本 |
 |---|---|
-| **汉化版本** | **v1.1**（2026-09-07，第一、二阶段全部完成） |
+| **汉化版本** | **v1.2**（2026-09-23，全功能复测后修复；v1.1 为 2026-09-07） |
 | **VESC Tool 版本** | **7.00**（`VT_VERSION = 7.00`，`VT_IS_TEST_VERSION = 0`，正式版非测试版） |
 | **上游源码** | [vedderb/vesc_tool](https://github.com/vedderb/vesc_tool) `master` · commit `dc53c658cbb89a947246034f7a00149cf79abdfc` |
 | **配置版本** | `VT_CONFIG_VERSION = 4` |
@@ -200,16 +208,20 @@ copy res_config_cn_for_official.rcc "%APPDATA%\VESC\VESC Tool\res_config.rcc"
 ## 目录结构
 
 ```
-vesc_tool_cn_win64/                可直接运行的程序目录（129 MB）
+vesc_tool_cn_win64/                可直接运行的程序目录（145 MB）
   ├─ vesc_tool_cn.exe              主程序
   ├─ translations/qt_zh_CN.qm      Qt 自带简体中文
   └─ translations/vesc_cn_extra.qm 自制补充翻译（标准按钮）
 config_cn_builtin/{6.06,7.00,7.01} 本 exe 内置的配置（中文下拉 + enumNamesSig）
 config_cn_official/{6.06,7.00,7.01} 给官方原版 exe 用的配置（英文下拉）
 res_config_cn_for_official.rcc     上面那份打成的外挂资源包
-patches/source_patches.diff        对上游源码的功能性改动
+patches/source_patches.diff        对上游源码的功能性改动（5 处）
+patches/full_source.diff           完整源码改动（198 个文件，含全部翻译；打到上游原版上即为编译本 exe 的源码）
 tools/                             汉化流水线脚本 + 3179 条译文词典 + VESC 设备模拟器
 screenshots/                       实机截图
+docs/img/                          教程和测试报告的配图
+TUTORIAL.md                        使用教程：参数识别 → 速度控制启动电机
+TEST_REPORT.md                     全功能复测报告（v1.2）
 MANIFEST.md                        完整交付说明（校验和、验证过程、已知问题）
 ```
 
@@ -217,7 +229,8 @@ MANIFEST.md                        完整交付说明（校验和、验证过程
 
 ## 对上游源码的改动
 
-除字符串替换外**只有四处**，完整补丁见 [`patches/source_patches.diff`](patches/source_patches.diff)：
+除字符串替换外**只有五处**，完整补丁见 [`patches/source_patches.diff`](patches/source_patches.diff)
+（在上游源码根目录 `patch -p1 < source_patches.diff`，已自检可干净打上）：
 
 | 文件 | 改动 | 为什么 |
 |---|---|---|
@@ -225,10 +238,16 @@ MANIFEST.md                        完整交付说明（校验和、验证过程
 | `configparam.h` | 新增 `enumNamesSig` 字段 | 见上面的「配置签名」 |
 | `configparams.cpp` | 解析 `<enumNamesSig>`，签名改用它计算 | 同上 |
 | `mainwindow.cpp` | `Terminal` / `QML Scripting` / `LispBM Scripting` 三个页面名成对替换 | `addPageItem()` 和 `showPage()` 共用同一字符串当页面键，只翻一边会打断页面跳转 |
+| `utility.h/.cpp` 等 | 新增 `Utility::detectResultZh()`，FOC 检测结果对话框显示中文 | 检测结果文本同时被拿来判断成败（`startsWith("Success!")`），只能在显示处翻译 |
 
 ---
 
 ## 验证
+
+> **v1.2 做了一次全功能复测**：用带电机物理模型的 7.00 固件模拟器
+> [`tools/vesc_emu.py`](tools/vesc_emu.py) 走通了「连接 → 参数识别 → 识别成功 → 速度控制启动电机」，
+> 以及配置读写、识别失败、底部全部控制按钮、急停、保活、实时数据、终端、33 个页面巡检，
+> 共 99 项全部通过，详见 [TEST_REPORT.md](TEST_REPORT.md)。下面是 v1.1 时做的首轮验证。
 
 没有实机电调，所以写了 [`tools/vesc_sim.py`](tools/vesc_sim.py) —— 用 VESC 的包协议在 TCP 上
 模拟一台跑 6.06 固件、硬件名 `DIY_70_80` 的电调。它实现了分帧 + CRC16、`COMM_FW_VERSION`、
@@ -277,6 +296,25 @@ python tools/verify.py   <原版>/res/config/7.02 out/            # 校验
 回填一律是「只替换片段所占的那一段字节，其余逐字节保留」，并自动保留原文前后空白，
 所以 diff 干净、缩进不变。
 
+界面部分（`.ui` / `.qml` / `.cpp`）用 `extract2.py` / `apply2.py` 回填后，再按顺序跑这几个修正脚本
+（都可重复执行）：
+
+```bash
+python tools/fixup.py         <源码根>   # 位域 Unused、页面名、vesc_cn_extra 加载、数值框前缀等
+python tools/fix_detect_zh.py <源码根>   # 检测结果中文显示
+python tools/fix_round3.py    <源码根>   # v1.2 复测时补的遗留英文、参数分组标题
+python tools/fix_cjk_space.py <源码根>   # 去掉中文拼接处多余的空格
+python tools/make_patch.py    <上游源码根> patches/source_patches.diff out.diff   # 重新生成功能补丁
+```
+
+打包必须同时扫描两个 QML 目录，否则会漏掉向导需要的模块（v1.1 就栽在这里）：
+
+```bash
+windeployqt --compiler-runtime --qmldir <源码根>/mobile --qmldir <源码根>/res/qml vesc_tool_cn.exe
+```
+
+再把 `qt_zh_CN.qm`、`vesc_cn_extra.qm` 拷进 `translations/`。
+
 ### 踩过的坑
 
 - `.ui` 里 `<string notr="true"/>` 是自闭合标签且本就标记「不翻译」，正则只匹配无属性的
@@ -291,13 +329,15 @@ python tools/verify.py   <原版>/res/config/7.02 out/            # 校验
 
 ## 已知问题
 
+0. **没有打包 OpenSSL**：固件页「下载最新」、扩展包商店等 HTTPS 联网功能不可用（调试控制台里有
+   `TLS initialization failed`）。USB 连接、参数识别、电机控制、读写配置不受影响。需要时把
+   OpenSSL 1.1.1 x64 的 `libssl-1_1-x64.dll`、`libcrypto-1_1-x64.dll` 放到 exe 同目录。
 1. 版本号是 `7.00`，但代码取自上游 master（上游没有 7.00 的 tag，见「关于版本号」）。
    连接 **7.01** 固件会进入受限模式并提示固件更新，调参本身不受影响。
 2. `VT_GIT_COMMIT` 为空 —— 「关于」里该字段是空的（源码是 tar 包，无 `.git`）。
 3. 参数编辑器另存 XML 会丢 `enumNamesSig`，重新跑一次 `tools/add_sig.py` 即可补回。
-4. 模拟器未实现 `COMM_GET_VALUES_SELECTIVE`、IMU、BMS 等命令，相关页面连模拟器时没有数据。
-   这是模拟器的边界，不是汉化的问题。
-5. 布局未逐页目视核对。主界面、连接页、参数页、向导页都看过，中文比英文短，没发现撑坏或截断。
+4. 模拟器未实现 IMU、BMS、统计等命令，相关页面连模拟器时没有数据。这是模拟器的边界，不是汉化的问题。
+5. v1.2 已把左侧 33 个页面逐页截图巡检过，没发现撑坏或截断；各页内的子选项卡没有逐个点开。
 
 ---
 
@@ -306,7 +346,8 @@ python tools/verify.py   <原版>/res/config/7.02 out/            # 校验
 - VESC Tool 采用 **GNU GPL v3**，本仓库同样遵循，[`LICENSE`](LICENSE) 为上游许可证原文。
 - 完整源码见上游仓库 <https://github.com/vedderb/vesc_tool>
   （commit `dc53c658cbb89a947246034f7a00149cf79abdfc`），本仓库的改动全部在
-  [`patches/source_patches.diff`](patches/source_patches.diff) 和 `config_cn_builtin/` 里。
+  [`patches/full_source.diff`](patches/full_source.diff) 里（在上游源码根目录 `patch -p1 --binary < full_source.diff`，
+  得到的就是编译 `vesc_tool_cn.exe` 所用的源码，已逐字节核对）。
 - **VESC® 是 Benjamin Vedder 的注册商标。** 上游明确不鼓励在官方渠道之外发布 VESC Tool 的
   二进制版本，参见 [trademark policies](https://vesc-project.com/trademark_policies)。
   **本仓库仅作个人调参自用，不是官方发布，也不代表 VESC Project。**
