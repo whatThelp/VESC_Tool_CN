@@ -211,7 +211,9 @@ copy res_config_cn_for_official.rcc "%APPDATA%\VESC\VESC Tool\res_config.rcc"
 vesc_tool_cn_win64/                可直接运行的程序目录（145 MB）
   ├─ vesc_tool_cn.exe              主程序
   ├─ translations/qt_zh_CN.qm      Qt 自带简体中文
-  └─ translations/vesc_cn_extra.qm 自制补充翻译（标准按钮）
+  ├─ translations/vesc_cn_extra.qm 自制补充翻译（标准按钮）
+  ├─ libssl-1_1-x64.dll / libcrypto-1_1-x64.dll   OpenSSL 1.1.1w（HTTPS 功能用）
+  └─ licenses/OpenSSL-1.1.1-LICENSE.txt
 config_cn_builtin/{6.06,7.00,7.01} 本 exe 内置的配置（中文下拉 + enumNamesSig）
 config_cn_official/{6.06,7.00,7.01} 给官方原版 exe 用的配置（英文下拉）
 res_config_cn_for_official.rcc     上面那份打成的外挂资源包
@@ -329,9 +331,6 @@ windeployqt --compiler-runtime --qmldir <源码根>/mobile --qmldir <源码根>/
 
 ## 已知问题
 
-0. **没有打包 OpenSSL**：固件页「下载最新」、扩展包商店等 HTTPS 联网功能不可用（调试控制台里有
-   `TLS initialization failed`）。USB 连接、参数识别、电机控制、读写配置不受影响。需要时把
-   OpenSSL 1.1.1 x64 的 `libssl-1_1-x64.dll`、`libcrypto-1_1-x64.dll` 放到 exe 同目录。
 1. 版本号是 `7.00`，但代码取自上游 master（上游没有 7.00 的 tag，见「关于版本号」）。
    连接 **7.01** 固件会进入受限模式并提示固件更新，调参本身不受影响。
 2. `VT_GIT_COMMIT` 为空 —— 「关于」里该字段是空的（源码是 tar 包，无 `.git`）。
@@ -342,6 +341,8 @@ windeployqt --compiler-runtime --qmldir <源码根>/mobile --qmldir <源码根>/
 ---
 
 ## 许可与商标
+
+- 程序目录附带 **OpenSSL 1.1.1w**（`libssl-1_1-x64.dll`、`libcrypto-1_1-x64.dll`，[FireDaemon](https://www.firedaemon.com/get-openssl) 的 Windows 构建，Authenticode 签名有效，源自 OpenSSL 官方 tag `OpenSSL_1_1_1w`），供固件下载、扩展包商店等 HTTPS 功能使用。Qt 5.15.2 只能加载 1.1.x 系列；1.1.1 已于 2023-09 停止官方维护，这里只用于 VESC Tool 访问 vesc-project.com。许可证原文见 `vesc_tool_cn_win64/licenses/OpenSSL-1.1.1-LICENSE.txt`。*This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit (http://www.openssl.org/).*
 
 - VESC Tool 采用 **GNU GPL v3**，本仓库同样遵循，[`LICENSE`](LICENSE) 为上游许可证原文。
 - 完整源码见上游仓库 <https://github.com/vedderb/vesc_tool>

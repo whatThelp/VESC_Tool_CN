@@ -19,6 +19,7 @@
 | 5 | 低 | 遗留英文：新版 FOC 向导、欢迎页面板、仪表盘、65 处数值框前缀、旧版向导分组标题、方向页、状态栏写入提示、实时数据曲线、参数分组标题、底部指示条 | `tools/fixup.py`、`tools/fix_round3.py` |
 | 6 | 低 | 中文句子中间多余空格 145 处 | `tools/fix_cjk_space.py` |
 | 7 | 低 | 个别误译（`Current` 译成「当前值」等） | 已改 |
+| 8 | 低 | 没有 OpenSSL，HTTPS 功能不可用（`TLS initialization failed`） | 打包 OpenSSL 1.1.1w（FireDaemon 构建，签名有效），附许可证原文 |
 
 另外：设备模拟器换成带电机物理模型的 `tools/vesc_emu.py`（7.00 固件、参数识别、转速环、保活、急停），
 配套协议自检 `tools/emu_selftest.py`（24/24 通过）。
@@ -178,6 +179,8 @@ vesc_tool_cn/
 │  ├─ Qt5*.dll / platforms/ / QtQuick*/ …   Qt 运行时与 QML 模块
 │  ├─ translations/qt_zh_CN.qm        Qt 自带简体中文
 │  ├─ translations/vesc_cn_extra.qm   补充翻译（标准按钮）
+│  ├─ libssl-1_1-x64.dll / libcrypto-1_1-x64.dll   OpenSSL 1.1.1w
+│  ├─ licenses/OpenSSL-1.1.1-LICENSE.txt
 │  └─ libgcc_s_seh-1.dll / libstdc++-6.dll / libwinpthread-1.dll
 ├─ config_cn_builtin/{6.06,7.00,7.01}/   本 exe 内置的配置（中文下拉 + enumNamesSig）
 ├─ config_cn_official/{6.06,7.00,7.01}/  给官方原版 exe 用的配置（英文下拉）
@@ -196,6 +199,12 @@ vesc_tool_cn/
 | `vesc_tool_cn_win64/vesc_tool_cn.exe` | 20926976 | `946c5e518e9d81a4d47ee61069e8c802` |
 | `vesc_tool_cn_win64/translations/vesc_cn_extra.qm` | 2014 | `af0b2146b8f8282d255ced1f6eeac6f9` |
 | `res_config_cn_for_official.rcc` | 2035290 | `a07c233912bb68c6ef286feaabf84407` |
+| `vesc_tool_cn_win64/libssl-1_1-x64.dll` | 804776 | sha256 `a2a8ca61ed7490251332e9792f797e76fbcd3afda51d8fed6cc8e7165faae295` |
+| `vesc_tool_cn_win64/libcrypto-1_1-x64.dll` | 3015592 | sha256 `ba485625776661186e664cc1fb5b5b460a96406fe05ac2f17ead060eabdd7f84` |
+
+OpenSSL 的两个 DLL 取自 `https://download.firedaemon.com/FireDaemon-OpenSSL/openssl-1.1.1w.zip`
+（zip 的 sha256 `1870b15bf6749e65ffbbadf52cdff3ee0e9f02943550bf4395574bb432af3eb8`）。Qt 官方仓库
+已下架 1.1.1，只剩 3.x，而 Qt 5.15.2 只能加载 1.1.x。DLL 只依赖 Windows 自带的通用 C 运行库。
 
 `vesc_tool_cn.exe` 是 `PE32+ executable for MS Windows 5.02 (GUI), x86-64`。
 
@@ -308,9 +317,9 @@ python tools/vesc_sim.py <原版vesc_tool>/res/config/6.06 65102 6 6
 7. **注册表副作用** —— 验证运行时程序在 `HKCU\Software\VESC\VESC Tool` 下写了默认设置，
    并把 `intro_done` 置为 `false`。后果是下次启动任何版本的 VESC Tool 会再弹一次首启介绍
    向导，点完即可，不影响电调配置。
-8. **没有打包 OpenSSL** —— 固件页「下载最新」、扩展包商店等 HTTPS 功能不可用（调试控制台有
-   `TLS initialization failed`），USB 连接、参数识别、电机控制、读写配置不受影响。需要时把
-   OpenSSL 1.1.1 x64 的 `libssl-1_1-x64.dll`、`libcrypto-1_1-x64.dll` 放到 exe 同目录。
+8. **OpenSSL 1.1.1 已停止官方维护（2023-09）** —— 但 Qt 5.15.2 只能用 1.1.x。这里只用于
+   VESC Tool 访问 vesc-project.com 的 HTTPS 功能。重新 `windeployqt` 打包时不会自动带上这两个
+   DLL，要手动拷回去。
 9. **打包必须同时扫描两个 QML 目录** —— `windeployqt --compiler-runtime --qmldir <源码>/mobile
    --qmldir <源码>/res/qml vesc_tool_cn.exe`，再把 `qt_zh_CN.qm`、`vesc_cn_extra.qm` 拷进
    `translations/`。只扫 `res/qml` 就会重现 v1.1 的「向导打不开」。

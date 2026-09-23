@@ -28,7 +28,7 @@
 <td><b>修复后（v1.2）</b><br><img src="docs/img/r02_fixed_panel.png" width="440"><br>面板和仪表盘正常，向导可用</td>
 </tr></table>
 
-除此之外还修了 6 类问题（识别结果是英文、若干遗留英文、位域参数误显示、源码补丁不完整等），
+除此之外还修了 6 类问题（识别结果是英文、若干遗留英文、位域参数误显示、源码补丁不完整等），并补上了 OpenSSL（联网功能），
 见第 3 节。另有 **5 个原版就是这样设计、但很容易让人以为「坏了」的地方**，见第 4 节 ——
 建议先看这一节，再按 [TUTORIAL.md](TUTORIAL.md) 操作。
 
@@ -153,6 +153,7 @@
 | 5 | 低 | 遗留英文：新版向导（标签页、用途、电机名、上一步/下一步/运行检测/完成、手动覆盖）、欢迎页面板（隐藏 / 发现的设备 / 扫描…、实时数据 / 配置档）、仪表盘、各页数值框的描述性前缀（端口：/ 波特率：/ 最大功率损耗：等 65 处）、旧版向导分组标题、方向页、状态栏「Motor config write OK」、实时数据曲线的坐标轴与图例、参数表分组标题（Encoder / Speed Controller…）、底部指示条 | 这些字符串不在 `tr()` 或属性白名单里，第一、二阶段没抓到 | 逐条定点替换；动之前逐一确认只用于显示 |
 | 6 | 低 | 中文句子中间多出空格（如「请确认 周围没有障碍物」），共 145 处 | 英文原文靠行尾空格拼接两段字面量，翻译后保留了空格 | 删除拼接处中文与中文之间的空格；顺带补了一处缺失的句号 |
 | 7 | 低 | 个别误译：`Current`（电流）被译成「当前值」（4 处）、「加载 XML / 载入 XML」不统一、三个配置检查标题是英文 | — | 已改 |
+| 8 | 低 | 启动时调试控制台报 `TLS initialization failed`，固件「下载最新」、扩展包商店等 HTTPS 功能不可用 | 程序目录没有 OpenSSL | 打包 OpenSSL 1.1.1w（见下）；验证：进程从程序目录加载了两个 DLL，TLS 报错消失 |
 
 修复后：完整重编译 **0 error / 0 warning**；改动过的 QML 全部通过 `qmllint`；
 6 个配置 XML × 2 种变体结构校验全部通过；配置签名与固件一致。
@@ -174,7 +175,7 @@
 
 | 项 | 说明 |
 |---|---|
-| **OpenSSL 未打包** | 程序目录里没有 `libssl-1_1-x64.dll` / `libcrypto-1_1-x64.dll`，启动时调试控制台有一行 `TLS initialization failed`。影响：固件页「下载最新」、VESC 扩展包商店、在线检查更新等 **HTTPS 联网功能**不可用。**不影响** USB 连接、参数识别、电机控制、读写配置（这些都不走网络）。本机只有其它厂商软件里自带的副本（带第三方签名），不适合放进仓库。需要联网功能时，把 **OpenSSL 1.1.1 x64** 的这两个 DLL 放到 `vesc_tool_cn.exe` 同目录即可 |
+| OpenSSL（已补） | 程序目录附带 **OpenSSL 1.1.1w**（`libssl-1_1-x64.dll`、`libcrypto-1_1-x64.dll`，[FireDaemon](https://www.firedaemon.com/get-openssl) 的 Windows 构建，Authenticode 签名有效，源自 OpenSSL 官方 tag `OpenSSL_1_1_1w`），供固件下载、扩展包商店等 HTTPS 功能使用。Qt 5.15.2 只能加载 1.1.x 系列；1.1.1 已于 2023-09 停止官方维护，这里只用于 VESC Tool 访问 vesc-project.com。许可证原文见 `vesc_tool_cn_win64/licenses/OpenSSL-1.1.1-LICENSE.txt`。*This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit (http://www.openssl.org/).* 联网功能本身（下载固件、扩展包）没有实际点下去测，只验证了 TLS 能初始化 |
 | USB 串口连接 | 本机没有 VESC 设备，也装不了虚拟串口驱动（Secure Boot 拦截），未测。串口与 TCP 走同一套包协议，差别只在传输层 |
 | 实机电气特性 | 模拟器按固件公式建模，但真实电机的噪声、饱和、温升、电源限流都比模拟复杂。识别数值以实机为准 |
 | 未覆盖的功能 | 固件升级、蓝牙 BLE、CAN 多机、IMU / BMS 数据、LispBM / QML 脚本在设备上运行、日志分析（需要实机日志）、扩展包商店（需要联网） |
