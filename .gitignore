@@ -1,3 +1,7 @@
 __pycache__/
 *.pyc
 tools/patchwork/
+
+# 编译产物放在 Release，不进仓库
+vesc_tool_cn_win64/
+*.rcc
