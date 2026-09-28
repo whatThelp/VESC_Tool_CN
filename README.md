@@ -23,7 +23,7 @@
 </p>
 
 > **v1.1 用户请更新**：v1.1（2026-09-07）的程序包漏打了几个 QML 运行库，欢迎页右侧是空白的、
-> **FOC 电机配置向导点了没反应**。v1.2 已修复，请从 [Release]（[Gitee](https://gitee.com/wowhywhat/vesc_-tool_-cn/releases) / [GitHub](https://github.com/whatThelp/VESC_Tool_CN/releases)） 下载新包，整个替换 `vesc_tool_cn_win64` 目录。
+> **FOC 电机配置向导点了没反应**。v1.2 已修复，请从 [Gitee 发行版](https://gitee.com/wowhywhat/vesc_-tool_-cn/releases) 或 GitHub 的 [`release` 分支](https://github.com/whatThelp/VESC_Tool_CN/tree/release) 下载新包，整个替换 `vesc_tool_cn_win64` 目录。
 
 ---
 
@@ -136,16 +136,16 @@
 
 ## 下载与使用
 
-> 编译好的程序不放在仓库里，统一从 [Release]（[Gitee](https://gitee.com/wowhywhat/vesc_-tool_-cn/releases) / [GitHub](https://github.com/whatThelp/VESC_Tool_CN/releases)） 下载。仓库只存源码、配置、脚本和文档。
+> 编译好的程序不放在 master 里：国内从 [Gitee 发行版](https://gitee.com/wowhywhat/vesc_-tool_-cn/releases) 下载；GitHub 上放在单独的 [`release` 分支](https://github.com/whatThelp/VESC_Tool_CN/tree/release)（[直接下载 zip](https://github.com/whatThelp/VESC_Tool_CN/raw/release/VESC_Tool_CN_v1.2_win64.zip)）。master 只存源码、配置、脚本和文档，Gitee 与 GitHub 的 master 完全一致。
 
 ### 方式 A：直接用编译好的程序（推荐，中文最完整）
 
-从 Release 下载 **`VESC_Tool_CN_v1.2_win64.zip`**，解压后双击 `vesc_tool_cn_win64esc_tool_cn.exe`。
+下载 **`VESC_Tool_CN_v1.2_win64.zip`**（地址见上），解压后双击 `vesc_tool_cn_win64\vesc_tool_cn.exe`。
 Qt 运行时和 MinGW 运行时都在目录里，**不需要安装 Qt**。
 
 ### 方式 B：不重编译，给现有官方版换中文配置
 
-如果你想继续用官方原版 `vesc_tool_7.00.exe` / `7.01`，只把参数和帮助换成中文：从 Release 下载
+如果你想继续用官方原版 `vesc_tool_7.00.exe` / `7.01`，只把参数和帮助换成中文：从 Gitee 发行版或 GitHub `release` 分支下载
 `res_config_cn_for_official.rcc`（也可以用 `tools/build_rcc.py` 自己打包），然后
 
 ```bat
@@ -211,7 +211,7 @@ copy res_config_cn_for_official.rcc "%APPDATA%\VESC\VESC Tool\res_config.rcc"
 ## 目录结构
 
 ```
-（Release）VESC_Tool_CN_v1.2_win64.zip   程序包，解压得到下面这个目录（145 MB，不在仓库里）
+（发行版 / release 分支）VESC_Tool_CN_v1.2_win64.zip   程序包，解压得到下面这个目录（145 MB，不在 master 里）
 vesc_tool_cn_win64/
   ├─ vesc_tool_cn.exe              主程序
   ├─ translations/qt_zh_CN.qm      Qt 自带简体中文
@@ -220,7 +220,7 @@ vesc_tool_cn_win64/
   └─ licenses/OpenSSL-1.1.1-LICENSE.txt
 config_cn_builtin/{6.06,7.00,7.01} 本 exe 内置的配置（中文下拉 + enumNamesSig）
 config_cn_official/{6.06,7.00,7.01} 给官方原版 exe 用的配置（英文下拉）
-（Release）res_config_cn_for_official.rcc   上面那份打成的外挂资源包（tools/build_rcc.py 生成）
+（发行版 / release 分支）res_config_cn_for_official.rcc   上面那份打成的外挂资源包（tools/build_rcc.py 生成）
 patches/source_patches.diff        对上游源码的功能性改动（5 处）
 patches/full_source.diff           完整源码改动（198 个文件，含全部翻译；打到上游原版上即为编译本 exe 的源码）
 tools/                             汉化流水线脚本 + 3179 条译文词典 + VESC 设备模拟器

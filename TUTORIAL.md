@@ -4,7 +4,7 @@
 下面的截图都是用这个版本实际操作时截的（连的是设备模拟器，界面和连真板子一样，只是状态栏写的是 TCP）。
 
 > 如果你用的是 v1.1（2026-09-07 的包），欢迎页右侧是空白的、FOC 向导点了没反应 ——
-> 那是打包缺库的问题，请从 [Release]（[Gitee](https://gitee.com/wowhywhat/vesc_-tool_-cn/releases) / [GitHub](https://github.com/whatThelp/VESC_Tool_CN/releases)） 下载 v1.2 的包，整个替换 `vesc_tool_cn_win64` 目录。详见 [TEST_REPORT.md](TEST_REPORT.md)。
+> 那是打包缺库的问题，请从 [Gitee 发行版](https://gitee.com/wowhywhat/vesc_-tool_-cn/releases) 或 GitHub 的 [`release` 分支](https://github.com/whatThelp/VESC_Tool_CN/tree/release) 下载 v1.2 的包，整个替换 `vesc_tool_cn_win64` 目录。详见 [TEST_REPORT.md](TEST_REPORT.md)。
 
 整个流程：
 
@@ -27,7 +27,7 @@
 
 **软件**
 
-- 从 [Release]（[Gitee](https://gitee.com/wowhywhat/vesc_-tool_-cn/releases) / [GitHub](https://github.com/whatThelp/VESC_Tool_CN/releases)） 下载 `VESC_Tool_CN_v1.2_win64.zip`，解压后双击
+- 从 [Gitee 发行版](https://gitee.com/wowhywhat/vesc_-tool_-cn/releases) 或 GitHub 的 [`release` 分支](https://github.com/whatThelp/VESC_Tool_CN/tree/release)（[直接下载](https://github.com/whatThelp/VESC_Tool_CN/raw/release/VESC_Tool_CN_v1.2_win64.zip)）下载 `VESC_Tool_CN_v1.2_win64.zip`，解压后双击
   `vesc_tool_cn_win64\vesc_tool_cn.exe`。整个目录一起用，不能只拷 exe；不需要装 Qt。
 - Windows 10 / 11 不用装驱动，插上 USB 后「设备管理器 → 端口 (COM 和 LPT)」里会多出一个 COM 口。
 

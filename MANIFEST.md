@@ -174,8 +174,8 @@ vesc_tool_cn/
 ├─ TUTORIAL.md                        使用教程：参数识别 → 速度控制启动电机
 ├─ TEST_REPORT.md                     v1.2 全功能复测报告
 ├─ docs/img/                          教程与报告配图、33 页巡检缩略图
-│  （以下两项是编译产物，不在仓库里，放在 Release：Gitee / GitHub 的 Releases 页）
-├─ [Release] VESC_Tool_CN_v1.2_win64.zip  解压得到 vesc_tool_cn_win64/（约 145 MB）
+│  （以下两项是编译产物，不在 master 里：Gitee 放发行版附件，GitHub 放在只推到 GitHub 的 release 分支）
+├─ [发布] VESC_Tool_CN_v1.2_win64.zip  解压得到 vesc_tool_cn_win64/（约 145 MB）
 │  ├─ vesc_tool_cn.exe                主程序
 │  ├─ Qt5*.dll / platforms/ / QtQuick*/ …   Qt 运行时与 QML 模块
 │  ├─ translations/qt_zh_CN.qm        Qt 自带简体中文
@@ -185,7 +185,7 @@ vesc_tool_cn/
 │  └─ libgcc_s_seh-1.dll / libstdc++-6.dll / libwinpthread-1.dll
 ├─ config_cn_builtin/{6.06,7.00,7.01}/   本 exe 内置的配置（中文下拉 + enumNamesSig）
 ├─ config_cn_official/{6.06,7.00,7.01}/  给官方原版 exe 用的配置（英文下拉）
-├─ [Release] res_config_cn_for_official.rcc   上面那份打成的外挂资源包（见第 6 节方式 B，tools/build_rcc.py 生成）
+├─ [发布] res_config_cn_for_official.rcc   上面那份打成的外挂资源包（见第 6 节方式 B，tools/build_rcc.py 生成）
 ├─ patches/source_patches.diff           功能性源码改动（5 处）
 ├─ patches/full_source.diff              完整源码改动（198 个文件，含全部翻译），打到上游原版上即得到编译本 exe 的源码
 ├─ tools/                                汉化流水线 + 3179 条译文词典 + 修正脚本 + 设备模拟器 + .ts 源文件
@@ -195,7 +195,7 @@ vesc_tool_cn/
 
 ### 校验和
 
-Release 附件：
+发布文件（Gitee 发行版附件 / GitHub `release` 分支，两处内容相同）：
 
 | 文件 | 字节 | sha256 |
 |---|---|---|
@@ -222,7 +222,7 @@ OpenSSL 的两个 DLL 取自 `https://download.firedaemon.com/FireDaemon-OpenSSL
 
 ### 方式 A：直接用编译好的程序（推荐，中文最完整）
 
-从 Release 下载 `VESC_Tool_CN_v1.2_win64.zip`，解压后双击 `vesc_tool_cn_win64\vesc_tool_cn.exe`。不需要装 Qt。
+从 Gitee 发行版或 GitHub `release` 分支下载 `VESC_Tool_CN_v1.2_win64.zip`，解压后双击 `vesc_tool_cn_win64\vesc_tool_cn.exe`。不需要装 Qt。
 菜单、导航、按钮、悬停提示、参数、帮助、Qt 标准对话框全中文，且配置签名与固件一致。
 
 ### 方式 B：不重编译，给现有官方 VESC Tool 换中文配置

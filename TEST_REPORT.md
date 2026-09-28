@@ -3,7 +3,7 @@
 | 项 | 内容 |
 |---|---|
 | 测试日期 | 2026-09-23 |
-| 被测程序 | Release 附件 `VESC_Tool_CN_v1.2_win64.zip` 里的 `vesc_tool_cn.exe`（汉化版 v1.2，VESC Tool 7.00，上游 master `dc53c658`） |
+| 被测程序 | 发布包 `VESC_Tool_CN_v1.2_win64.zip`（Gitee 发行版 / GitHub `release` 分支）里的 `vesc_tool_cn.exe`（汉化版 v1.2，VESC Tool 7.00，上游 master `dc53c658`） |
 | 对照 | 上一版发布包（汉化版 v1.1，2026-09-07） |
 | 固件 | **7.00**（与你板子上的固件一致），硬件名 `DIY_70_80` |
 | 设备 | 没有实机，用 [`tools/vesc_emu.py`](tools/vesc_emu.py) 模拟电调 + 电机（见第 6 节） |
