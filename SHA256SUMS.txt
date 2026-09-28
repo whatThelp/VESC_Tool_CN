@@ -1,0 +1,2 @@
+18a958a625dc6bebb0c2f94e7d3c85a6caf45386c0552259a2a561d8b87919c7  VESC_Tool_CN_v1.2_win64.zip  (55373971 bytes)
+23d346a62f9730fbf4ea933e665c8a3a041d1e2cc4ba4e84a10ad06f7d5e0d3e  res_config_cn_for_official.rcc  (2035290 bytes)
